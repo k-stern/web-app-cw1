@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script>
     <!--<link rel="stylesheet" href="mystyle.css">-->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <title>After School Class App</title>
 </head>
 <body>
@@ -13,8 +14,10 @@
         <header>
             <h1 v-text="sitename"></h1>
         </header>
-        <div id="checkout">
-            <p >Checkout Button Area here </p>
+        <div id="checkout" class="nav navbar-nav navbar-right cart">
+            <button type="button" class="btn btn-default btn-sm">
+                <span class="glyphicon glyphicon-shopping-cart"></span> {{cartItemCount}} Shopping Cart
+              </button>
         </div>
         <br/>
         <div class="left">
@@ -39,8 +42,9 @@
                         <p>Location: {{product.location}}</p>
                         <p>Price: {{product.price | formatPrice}}</p>
                         <p>Availability: {{product.availability}}</p>
-                        <img alt="" src:bind="product.image">
-                        <button class="btnAdd" v-on:click="addToCart(product)">Add to Cart</button>
+                        <img alt="none" src:bind="product.image">
+                        <button class="btnAdd" v-on:click="addToCart(product)" v-if="canAddToCart(product)">Add to Cart</button>
+                        <button class="btnDisabled" disabled="disabled" v-else>Unavailable</button>
                       </div>
                     <br/>
                 </div>
@@ -157,6 +161,17 @@
             methods: {
                 addToCart: function (product) {
                     this.cart.push(product.id);
+                    product.availability--;
+                },
+                canAddToCart: function(product){
+                    //return this.product.availability > this.cartItemCount;
+                    //return this.cart.filter((x) => x == product.id).length != product.availability
+                    return product.availability > 0;
+                }
+            },
+            computed:{
+                cartItemCount: function(){
+                    return this.cart.length || "";
                 }
             }
             
@@ -191,7 +206,12 @@
         .btnAdd{
             color: white;
             border: 2px solid black;
-            background-color: blue;
+            background-color: green;
+        }
+        .btnDisabled{
+            color: white;
+            border: 2px solid black;
+            background-color: red;
         }
     </style>
 </body>

@@ -12,7 +12,6 @@
     <div id="app">
         <header>
             <h1 v-text="sitename"></h1>
-
         </header>
         <div id="checkout">
             <p >Checkout Button Area here </p>
@@ -44,13 +43,16 @@
                     </div>
                     <br/>
                     <div class="item">
-                        <p v-text="product.subject"></p>
-                        <p v-text="product.location"></p>
-                        <p v-text="product.price"></p>
-                        <p v-text="product.spaces"></p>
-                        <img alt="" src:bind="product.image">
+                        <p v-text="products.subject"></p>
+                        <p v-text="products.location"></p>
+                        <p v-text="products.price"></p>
+                        <p v-text="products.spaces"></p>
+                        <img alt="" src:bind="products.image">
                         <button class="btnAdd">Add to Cart</button>
                     </div>
+                    <div v-for="product in products" :key="product.id">
+                        <h1>{{product.subject}}</h1>
+                      </div>
                     <br/>
                 </div>
             </main>
@@ -62,7 +64,8 @@
             el: "#app",
             data: {
                 sitename: "After School Class App",
-                product: { // product information similar to the last time
+                products: [
+                {
                 id:1001,
                 subject: "Math",
                 location: "London",
@@ -70,6 +73,79 @@
                 spaces: 5,
                 image: "assets/images/product-fullsize.png"
                 },
+                { 
+                id:1002,
+                subject: "English",
+                location: "London",
+                price: 2000,
+                spaces: 5,
+                image: "assets/images/product-fullsize.png"
+                },
+                { 
+                id:1003,
+                subject: "Science",
+                location: "London",
+                price: 2000,
+                spaces: 5,
+                image: "assets/images/product-fullsize.png"
+                },
+                { 
+                id:1004,
+                subject: "Spanish",
+                location: "London",
+                price: 2000,
+                spaces: 5,
+                image: "assets/images/product-fullsize.png"
+                },
+                { 
+                id:1005,
+                subject: "French",
+                location: "London",
+                price: 2000,
+                spaces: 5,
+                image: "assets/images/product-fullsize.png"
+                },
+                { 
+                id:1006,
+                subject: "History",
+                location: "London",
+                price: 2000,
+                spaces: 5,
+                image: "assets/images/product-fullsize.png"
+                },
+                { 
+                id:1007,
+                subject: "Law",
+                location: "London",
+                price: 2000,
+                spaces: 5,
+                image: "assets/images/product-fullsize.png"
+                },
+                { 
+                id:1008,
+                subject: "Business",
+                location: "London",
+                price: 2000,
+                spaces: 5,
+                image: "assets/images/product-fullsize.png"
+                },
+                { 
+                id:1009,
+                subject: "Economics",
+                location: "London",
+                price: 2000,
+                spaces: 5,
+                image: "assets/images/product-fullsize.png"
+                },
+                { 
+                id:1010,
+                subject: "IT",
+                location: "London",
+                price: 2000,
+                spaces: 5,
+                image: "assets/images/product-fullsize.png"
+                }
+                ],
                 cart:[]
             },
             

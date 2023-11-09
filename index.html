@@ -40,7 +40,7 @@
                         <p>Price: {{product.price | formatPrice}}</p>
                         <p>Availability: {{product.availability}}</p>
                         <img alt="" src:bind="product.image">
-                        <button class="btnAdd">Add to Cart</button>
+                        <button class="btnAdd" v-on:click="addToCart(product)">Add to Cart</button>
                       </div>
                     <br/>
                 </div>
@@ -154,6 +154,11 @@
                     }
                 }
             },
+            methods: {
+                addToCart: function (product) {
+                    this.cart.push(product.id);
+                }
+            }
             
         })
     </script>

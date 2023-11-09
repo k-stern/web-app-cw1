@@ -33,25 +33,14 @@
         <div class="right">
             <main>
                 <div id="itemList">
-                    <div class="item">
-                        <p>Subject: </p>
-                        <p>Location:  </p>
-                        <p>Price: </p>
-                        <p>Spaces: </p>
-                        <img alt="" src=""/>
-                        <button class="btnAdd">Add to Cart</button>
-                    </div>
                     <br/>
-                    <div class="item">
-                        <p v-text="products.subject"></p>
-                        <p v-text="products.location"></p>
-                        <p v-text="products.price"></p>
-                        <p v-text="products.spaces"></p>
-                        <img alt="" src:bind="products.image">
+                    <div class="item" v-for="product in products" :key="product.id">
+                        <p>Subject: {{product.subject}}</p>
+                        <p>Location: {{product.location}}</p>
+                        <p>Price: {{product.price | formatPrice}}</p>
+                        <p>Availability: {{product.availability}}</p>
+                        <img alt="" src:bind="product.image">
                         <button class="btnAdd">Add to Cart</button>
-                    </div>
-                    <div v-for="product in products" :key="product.id">
-                        <h1>{{product.subject}}</h1>
                       </div>
                     <br/>
                 </div>
@@ -70,7 +59,7 @@
                 subject: "Math",
                 location: "London",
                 price: 2000,
-                spaces: 5,
+                availability: 5,
                 image: "assets/images/product-fullsize.png"
                 },
                 { 
@@ -78,7 +67,7 @@
                 subject: "English",
                 location: "London",
                 price: 2000,
-                spaces: 5,
+                availability: 5,
                 image: "assets/images/product-fullsize.png"
                 },
                 { 
@@ -86,7 +75,7 @@
                 subject: "Science",
                 location: "London",
                 price: 2000,
-                spaces: 5,
+                availability: 5,
                 image: "assets/images/product-fullsize.png"
                 },
                 { 
@@ -94,7 +83,7 @@
                 subject: "Spanish",
                 location: "London",
                 price: 2000,
-                spaces: 5,
+                availability: 5,
                 image: "assets/images/product-fullsize.png"
                 },
                 { 
@@ -102,7 +91,7 @@
                 subject: "French",
                 location: "London",
                 price: 2000,
-                spaces: 5,
+                availability: 5,
                 image: "assets/images/product-fullsize.png"
                 },
                 { 
@@ -110,7 +99,7 @@
                 subject: "History",
                 location: "London",
                 price: 2000,
-                spaces: 5,
+                availability: 5,
                 image: "assets/images/product-fullsize.png"
                 },
                 { 
@@ -118,7 +107,7 @@
                 subject: "Law",
                 location: "London",
                 price: 2000,
-                spaces: 5,
+                availability: 5,
                 image: "assets/images/product-fullsize.png"
                 },
                 { 
@@ -126,7 +115,7 @@
                 subject: "Business",
                 location: "London",
                 price: 2000,
-                spaces: 5,
+                availability: 5,
                 image: "assets/images/product-fullsize.png"
                 },
                 { 
@@ -134,7 +123,7 @@
                 subject: "Economics",
                 location: "London",
                 price: 2000,
-                spaces: 5,
+                availability: 5,
                 image: "assets/images/product-fullsize.png"
                 },
                 { 
@@ -142,11 +131,28 @@
                 subject: "IT",
                 location: "London",
                 price: 2000,
-                spaces: 5,
+                availability: 5,
                 image: "assets/images/product-fullsize.png"
                 }
                 ],
                 cart:[]
+            },
+            filters:{
+                formatPrice: function(price){
+                    if(!parseInt(price)) {return "";}
+                    if (price>99999){
+                        var priceString = (price / 100).toFixed(2);
+                        var priceArray = priceString.split("").reverse();
+                        var index = 3;
+                        while (priceArray.length > index + 3){
+                            priceArray.splice(index+3, 0,",");
+                            index += 4;
+                        }
+                        return "£" + priceArray.reverse().join("");
+                    } else {
+                        return "£" + (price / 100).toFixed(2);
+                    }
+                }
             },
             
         })

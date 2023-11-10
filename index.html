@@ -1,43 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script>
-    <!--<link rel="stylesheet" href="mystyle.css">-->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fontawesome/5.15.1/css/all.min.css">-->
+    <script src="https://kit.fontawesome.com/2c35d003f0.js" crossorigin="anonymous"></script>
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
     <title>After School Class App</title>
 </head>
+
 <body>
     <div id="app">
         <header>
             <h1 v-text="sitename"></h1>
         </header>
         <div id="checkout" class="nav navbar-nav navbar-right cart">
-            <button type="button" class="btn btn-default btn-sm">
-                <span class="glyphicon glyphicon-shopping-cart"></span> {{cartItemCount}} Shopping Cart
-              </button>
+            <button type="button" @="showCheckout">
+                {{cartItemCount}} <span class="fas fa-cart-plus"></span>  Shopping Cart
+            </button>
         </div>
-        <br/>
+        <br />
         <div class="left">
             <menu>
-                <input type="search" name="search" id="txtsearch" title="text search">
+                <input type="search" name="search" id="txtsearch" title="search">
                 <p>Sort By:</p>
-                <li>Subject</li>
-                <li>Location</li>
-                <li>Price</li>
-                <li>Availability</li>
-                <br/>
-                <li>Asc</li>
-                <li>Desc</li>
-              </menu>
+                <input v-model="sortBy" type="radio" id="subject" name="sortBy" value="subject">
+                <label for="subject">Subject</label><br>
+                <input v-model="sortBy" type="radio" id="location" name="sortBy" value="location" title="v">
+                <label for="loca">Location</label><br>
+                <input v-model="sortBy" type="radio" id="price" name="sortBy" value="price" title="o">
+                <label for="price">Price</label><br>
+                <input v-model="sortBy" type="radio" id="available" name="sortBy" value="available" title="f">
+                <label for="av">Availability</label><br>
+                <br />
+                <input v-model="sortOrder" type="radio" id="checkAsc" name="sortOrder" value="asc" title="a">
+                <label for="asc">Asc</label><br>
+                <input v-model="sortOrder" type="radio" id="checkDesc" name="sortOrder" value="desc" title="d">
+                <label for="desc">Desc</label><br>
+            </menu>
         </div>
         <div class="right">
             <main>
                 <div id="itemList">
-                    <br/>
-                    <div class="item" v-for="product in products" :key="product.id">
+                    <br />
+                    <div class="item" v-for="product in sortedProducts" :key="product.id">
                         <p>Subject: {{product.subject}}</p>
                         <p>Location: {{product.location}}</p>
                         <p>Price: {{product.price | formatPrice}}</p>
@@ -45,8 +54,8 @@
                         <img alt="none" src:bind="product.image">
                         <button class="btnAdd" v-on:click="addToCart(product)" v-if="canAddToCart(product)">Add to Cart</button>
                         <button class="btnDisabled" disabled="disabled" v-else>Unavailable</button>
-                      </div>
-                    <br/>
+                    </div>
+                    <br />
                 </div>
             </main>
         </div>
@@ -58,98 +67,100 @@
             data: {
                 sitename: "After School Class App",
                 products: [
-                {
-                id:1001,
-                subject: "Math",
-                location: "London",
-                price: 2000,
-                availability: 5,
-                image: "assets/images/product-fullsize.png"
-                },
-                { 
-                id:1002,
-                subject: "English",
-                location: "London",
-                price: 2000,
-                availability: 5,
-                image: "assets/images/product-fullsize.png"
-                },
-                { 
-                id:1003,
-                subject: "Science",
-                location: "London",
-                price: 2000,
-                availability: 5,
-                image: "assets/images/product-fullsize.png"
-                },
-                { 
-                id:1004,
-                subject: "Spanish",
-                location: "London",
-                price: 2000,
-                availability: 5,
-                image: "assets/images/product-fullsize.png"
-                },
-                { 
-                id:1005,
-                subject: "French",
-                location: "London",
-                price: 2000,
-                availability: 5,
-                image: "assets/images/product-fullsize.png"
-                },
-                { 
-                id:1006,
-                subject: "History",
-                location: "London",
-                price: 2000,
-                availability: 5,
-                image: "assets/images/product-fullsize.png"
-                },
-                { 
-                id:1007,
-                subject: "Law",
-                location: "London",
-                price: 2000,
-                availability: 5,
-                image: "assets/images/product-fullsize.png"
-                },
-                { 
-                id:1008,
-                subject: "Business",
-                location: "London",
-                price: 2000,
-                availability: 5,
-                image: "assets/images/product-fullsize.png"
-                },
-                { 
-                id:1009,
-                subject: "Economics",
-                location: "London",
-                price: 2000,
-                availability: 5,
-                image: "assets/images/product-fullsize.png"
-                },
-                { 
-                id:1010,
-                subject: "IT",
-                location: "London",
-                price: 2000,
-                availability: 5,
-                image: "assets/images/product-fullsize.png"
-                }
+                    {
+                        id: 1001,
+                        subject: "Math",
+                        location: "London",
+                        price: 2000,
+                        availability: 5,
+                        image: "assets/images/product-fullsize.png"
+                    },
+                    {
+                        id: 1002,
+                        subject: "English",
+                        location: "London",
+                        price: 2000,
+                        availability: 5,
+                        image: "assets/images/product-fullsize.png"
+                    },
+                    {
+                        id: 1003,
+                        subject: "Science",
+                        location: "London",
+                        price: 2000,
+                        availability: 5,
+                        image: "assets/images/product-fullsize.png"
+                    },
+                    {
+                        id: 1004,
+                        subject: "Spanish",
+                        location: "London",
+                        price: 2000,
+                        availability: 5,
+                        image: "assets/images/product-fullsize.png"
+                    },
+                    {
+                        id: 1005,
+                        subject: "French",
+                        location: "London",
+                        price: 2000,
+                        availability: 5,
+                        image: "assets/images/product-fullsize.png"
+                    },
+                    {
+                        id: 1006,
+                        subject: "History",
+                        location: "London",
+                        price: 2000,
+                        availability: 5,
+                        image: "assets/images/product-fullsize.png"
+                    },
+                    {
+                        id: 1007,
+                        subject: "Law",
+                        location: "London",
+                        price: 2000,
+                        availability: 5,
+                        image: "assets/images/product-fullsize.png"
+                    },
+                    {
+                        id: 1008,
+                        subject: "Business",
+                        location: "London",
+                        price: 2000,
+                        availability: 5,
+                        image: "assets/images/product-fullsize.png"
+                    },
+                    {
+                        id: 1009,
+                        subject: "Economics",
+                        location: "London",
+                        price: 2000,
+                        availability: 5,
+                        image: "assets/images/product-fullsize.png"
+                    },
+                    {
+                        id: 1010,
+                        subject: "IT",
+                        location: "London",
+                        price: 2000,
+                        availability: 5,
+                        image: "assets/images/product-fullsize.png"
+                    }
                 ],
-                cart:[]
+                cart: [],
+                sortBy: "subject",
+                sortOrder: "asc",
             },
-            filters:{
-                formatPrice: function(price){
-                    if(!parseInt(price)) {return "";}
-                    if (price>99999){
+            filters: {
+                formatPrice: function (price) {
+                    if (!parseInt(price)) { return ""; }
+                    if (price > 99999) {
                         var priceString = (price / 100).toFixed(2);
                         var priceArray = priceString.split("").reverse();
                         var index = 3;
-                        while (priceArray.length > index + 3){
-                            priceArray.splice(index+3, 0,",");
+                        while (priceArray.length > index + 3) {
+                            priceArray.splice(index + 3, 0, ",");
                             index += 4;
                         }
                         return "£" + priceArray.reverse().join("");
@@ -163,38 +174,54 @@
                     this.cart.push(product.id);
                     product.availability--;
                 },
-                canAddToCart: function(product){
+                canAddToCart: function (product) {
                     //return this.product.availability > this.cartItemCount;
                     //return this.cart.filter((x) => x == product.id).length != product.availability
                     return product.availability > 0;
+                },
+                showCheckout: function () {
+                    return 0;
                 }
+
             },
-            computed:{
-                cartItemCount: function(){
+            computed: {
+                sortedProducts(){
+                    function compare(a,b){
+                        if (a.subject > b.subject) return 1;
+                        if (a.subject < b.subject) return -1;
+                        return 0;
+                    }
+                    return this.products.sort(compare);
+                },
+                cartItemCount: function () {
                     return this.cart.length || "";
-                }
+                },
             }
-            
+
         })
     </script>
     <!---CSS SCRIPTS-->
     <style>
         /*#itemList{}*/
-        #app{
+        #app {
             margin: 0em 1em 1em 1em;
         }
-        #checkout{
-            float:right;
+
+        #checkout {
+            float: right;
         }
-        .left{
-            float:left;
+
+        .left {
+            float: left;
             padding-right: 2.5em;
             height: 100%;
         }
-        .right{
-            float:left;
+
+        .right {
+            float: left;
         }
-        .item{
+
+        .item {
             min-width: 15em;
             border-style: outset;
             border-width: 0.3em;
@@ -203,16 +230,19 @@
             padding: 5px;
             margin: 3px;
         }
-        .btnAdd{
+
+        .btnAdd {
             color: white;
             border: 2px solid black;
             background-color: green;
         }
-        .btnDisabled{
+
+        .btnDisabled {
             color: white;
             border: 2px solid black;
             background-color: red;
         }
     </style>
 </body>
+
 </html>

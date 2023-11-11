@@ -57,6 +57,48 @@
                     </div>
                     <br />
                 </div>
+                <div id="checkOut" class="chkoutBox">
+                    <h2>Checkout</h2>
+                    <p>
+                        <strong>First Name:</strong>
+                        <input type="text" v-model="order.firstName">
+                    </p>
+                    <p>
+                        <strong>Last Name:</strong>
+                        <input type="text" v-model="order.lastName">
+                    </p>
+                    <p>
+                        <strong>Address:</strong>
+                        <input type="text" v-model="order.address">
+                    </p>
+                    <p>
+                        <strong>City:</strong>
+                        <input type="text" v-model="order.city">
+                    </p>
+                    <p>
+                        <strong>Post Code:</strong>
+                        <input type="text" v-model="order.postCode">
+                    </p>
+                    <p></p>
+                    <p>
+                        <input type="radio" id="email" value="Email" v-model="order.method">
+                        <label for="email">Email</label>
+                    </p>
+                    <p>
+                        <input type="radio" id="post" value="Post" v-model="order.method">
+                        <label for="post">Post</label>
+                    </p>
+                    <br>
+                    <hr>
+                    <h2>Order Information</h2>
+                    <p>First Name: {{order.firstName}}</p>
+                    <p>Last Name: {{order.lastName}}</p>
+                    <p>Address: {{order.address}} {{order.city}} {{order.postCode}}</p>
+                    <br>
+                    <button @="submitForm">Place Order</button>
+
+                    
+                </div>
             </main>
         </div>
     </div>
@@ -151,6 +193,11 @@
                 cart: [],
                 sortBy: "subject",
                 sortOrder: "asc",
+                order: {
+                    firstName: "",
+                    lastName: "",
+                    method: "Email"
+                }
             },
             filters: {
                 formatPrice: function (price) {
@@ -181,17 +228,23 @@
                 },
                 showCheckout: function () {
                     return 0;
+                },
+                submitForm: function(){
+                    alert("order Subitted!");
                 }
 
             },
             computed: {
                 sortedProducts(){
-                    function compare(a,b){
-                        if (a.subject > b.subject) return 1;
-                        if (a.subject < b.subject) return -1;
+                    if(this.products.length > 0){
+                        let productsArray = this.products.slice(0);
+                        function compare(a,b){
+                        if (a.subject.toLowerCase() < b.subject.toLowerCase()) return -1;
+                        if (a.subject.toLowerCase() > b.subject.toLowerCase()) return 1;
                         return 0;
                     }
-                    return this.products.sort(compare);
+                    return productsArray.sort(compare);
+                    }
                 },
                 cartItemCount: function () {
                     return this.cart.length || "";

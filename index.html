@@ -5,10 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script>
-    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fontawesome/5.15.1/css/all.min.css">-->
     <script src="https://kit.fontawesome.com/2c35d003f0.js" crossorigin="anonymous"></script>
-    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
+    <script src="products.js"></script>
     <title>After School Class App</title>
 </head>
 
@@ -18,9 +16,10 @@
             <h1 v-text="sitename"></h1>
         </header>
         <div id="checkout" class="nav navbar-nav navbar-right cart">
-            <button type="button" @="showCheckout">
+            <button id="btnChkOut" v-if="showProducts" type="button" @click="showCart">
                 {{cartItemCount}} <span class="fas fa-cart-plus"></span> Shopping Cart
             </button>
+            <button id="btnClose" v-else class="btnClose" @click="closeCart" title="close cart">Close Cart <span class="fas fa-cart-plus"></span></button>
         </div>
         <br />
         <div class="left">
@@ -44,7 +43,8 @@
         </div>
         <div class="right">
             <main>
-                <div id="itemList">
+                <!--LESSONS LIST-->
+                <div id="itemList" v-if="showProducts">
                     <br />
                     <div class="item" v-for="product in sortedProducts" :key="product.id">
                         <p>Subject: {{product.subject}}</p>
@@ -58,7 +58,8 @@
                     </div>
                     <br />
                 </div>
-                <div id="shopCart" class="cartBox">
+                <!--SHOPPING CART-->
+                <div id="shopCart" class="cartBox" v-else-if="showBasket">
                    <h2>Shopping Cart</h2>
                    <hr>
                    <br>
@@ -69,15 +70,15 @@
                         <p><strong>Price:</strong> {{item.price | formatPrice}}</p>
                         <button class="btnRemove" v-on:click="removeFrmCart(item)" >Remove from Cart</button>
                    </div>
-                   
-
-
+                   <hr>
+                   <button class="btnCheckout" v-on:click="showCheckoutPage" >Continue to Checkout</button>
                 </div>
-                <div id="checkOut" class="chkoutBox" v-if="">
+                <!--CHECKOUT-->
+                <div id="checkOut" class="chkoutBox" v-if="showCheckout">
                     <h2>Checkout</h2>
                     <p>
                         <strong>First Name:</strong>
-                        <input type="text" v-model="order.firstName">
+                        <input type="text" v-model="order.firstName" pattern="">
                     </p>
                     <p>
                         <strong>Last Name:</strong>
@@ -95,6 +96,10 @@
                         <strong>Post Code:</strong>
                         <input type="text" v-model="order.postCode">
                     </p>
+                    <p>
+                        <strong>Phone:</strong>
+                        <input type="text" v-model="order.phone" pattern="/^((\+44)|(0)) ?\d{4} ?\d{6}$/" title="phone number">
+                    </p>
                     <p></p>
                     <p>
                         <input type="radio" id="email" value="Email" v-model="order.method">
@@ -107,13 +112,11 @@
                     <br>
                     <hr>
                     <h2>Order Information</h2>
-                    <p>First Name: {{order.firstName}}</p>
-                    <p>Last Name: {{order.lastName}}</p>
-                    <p>Address: {{order.address}} {{order.city}} {{order.postCode}}</p>
+                    <p><strong>First Name:</strong> {{order.firstName}}</p>
+                    <p><strong>Last Name:</strong> {{order.lastName}}</p>
+                    <p><strong>Address:</strong>{{order.address}} {{order.city}} {{order.postCode}}</p>
                     <br>
-                    <button @="submitForm">Place Order</button>
-
-
+                    <button v-on:click="submitForm">Place Order</button>
                 </div>
             </main>
         </div>
@@ -124,92 +127,14 @@
             el: "#app",
             data: {
                 sitename: "After School Class App",
-                products: [
-                    {
-                        id: 1001,
-                        subject: "Math",
-                        location: "London",
-                        price: 2000,
-                        availability: 5,
-                        image: "assets/images/product-fullsize.png"
-                    },
-                    {
-                        id: 1002,
-                        subject: "English",
-                        location: "London",
-                        price: 2600,
-                        availability: 7,
-                        image: "assets/images/product-fullsize.png"
-                    },
-                    {
-                        id: 1003,
-                        subject: "Science",
-                        location: "Harrow",
-                        price: 2000,
-                        availability: 21,
-                        image: "assets/images/product-fullsize.png"
-                    },
-                    {
-                        id: 1004,
-                        subject: "Spanish",
-                        location: "London",
-                        price: 3000,
-                        availability: 12,
-                        image: "assets/images/product-fullsize.png"
-                    },
-                    {
-                        id: 1005,
-                        subject: "French",
-                        location: "Edgware",
-                        price: 2900,
-                        availability: 11,
-                        image: "assets/images/product-fullsize.png"
-                    },
-                    {
-                        id: 1006,
-                        subject: "History",
-                        location: "Colindale",
-                        price: 2000,
-                        availability: 6,
-                        image: "assets/images/product-fullsize.png"
-                    },
-                    {
-                        id: 1007,
-                        subject: "Law",
-                        location: "Hendon",
-                        price: 4000,
-                        availability: 5,
-                        image: "assets/images/product-fullsize.png"
-                    },
-                    {
-                        id: 1008,
-                        subject: "Business",
-                        location: "Barnet",
-                        price: 2700,
-                        availability: 9,
-                        image: "assets/images/product-fullsize.png"
-                    },
-                    {
-                        id: 1009,
-                        subject: "Economics",
-                        location: "Camden",
-                        price: 4500,
-                        availability: 6,
-                        image: "assets/images/product-fullsize.png"
-                    },
-                    {
-                        id: 1010,
-                        subject: "IT",
-                        location: "Hackney",
-                        price: 2200,
-                        availability: 10,
-                        image: "assets/images/product-fullsize.png"
-                    }
-                ],
+                products: products,
                 cart: [],
                 searchT: "",
                 sortBy: "subject",
                 sortOrder: "asc",
+                showProducts: true,
+                showBasket: false,
+                showCheckout: false,
                 order: {
                     firstName: "",
                     lastName: "",
@@ -239,15 +164,29 @@
                     product.availability--;
                 },
                 canAddToCart: function (product) {
-                    //return this.product.availability > this.cartItemCount;
-                    //return this.cart.filter((x) => x == product.id).length != product.availability
                     return product.availability > 0;
                 },
-                showCheckout: function () {
-                    return 0;
+                showCart(){
+                    if(this.cartItemCount>0){
+                        this.showBasket = true
+                        this.showProducts = false
+                    }
                 },
-                submitForm: function () {
-                    alert("order Subitted!");
+                closeCart(){
+                    this.showProducts = true
+                    this.showBasket = false
+                    this.showCheckout = false
+                },
+                showCheckoutPage(){
+                    
+                    if(this.cartItemCount>0){
+                        this.showBasket = false
+                        this.showProducts = false
+                        this.showCheckout = true
+                    }
+                },
+                submitForm() {
+                    alert("Order Submitted!")
                 },
                 removeFrmCart: function (product) {
                     let selectedId = this.cart.findIndex(c => c.id == product.id);
@@ -291,7 +230,7 @@
                 },
                 cartItemCount: function () {
                     return this.cart.length || "";
-                },
+                }
             }
 
         })

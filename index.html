@@ -58,7 +58,22 @@
                     </div>
                     <br />
                 </div>
-                <div id="checkOut" class="chkoutBox">
+                <div id="shopCart" class="cartBox">
+                   <h2>Shopping Cart</h2>
+                   <hr>
+                   <br>
+                   <p>Your Items:</p>
+                   <div id="cartList" class="cartList" v-for="item in cart">
+                        <p><strong>{{item.subject}}</strong></p>
+                        <p><strong>Location:</strong> {{item.location}}</p>
+                        <p><strong>Price:</strong> {{item.price | formatPrice}}</p>
+                        <button class="btnRemove" v-on:click="removeFrmCart(item)" >Remove from Cart</button>
+                   </div>
+                   
+
+
+                </div>
+                <div id="checkOut" class="chkoutBox" v-if="">
                     <h2>Checkout</h2>
                     <p>
                         <strong>First Name:</strong>
@@ -220,7 +235,7 @@
             },
             methods: {
                 addToCart: function (product) {
-                    this.cart.push(product.id);
+                    this.cart.push(product);
                     product.availability--;
                 },
                 canAddToCart: function (product) {
@@ -233,25 +248,45 @@
                 },
                 submitForm: function () {
                     alert("order Subitted!");
-                }
+                },
+                removeFrmCart: function (product) {
+                    let selectedId = this.cart.findIndex(c => c.id == product.id);
+                    if (selectedId >= 0) { //check if item found
+                        var removed = this.cart.splice(selectedId, 1);
+                        console.log(removed);
+                        product.availability++;
+                    }
+                    }
 
             },
             computed: {
                 sortedProducts: function () {
                     if (this.products.length > 0) {
+                        let searchText = this.searchT;
                         let productsArray = this.products.sort((a, b) => {
                             if (this.sortOrder == "asc") {
                                 if (a[this.sortBy] < b[this.sortBy]) return -1;
                                 if (a[this.sortBy] > b[this.sortBy]) return 1;
                                 return 0;
-                            }
-                            else {
+                            } else {
                                 if (a[this.sortBy] > b[this.sortBy]) return -1;
                                 if (a[this.sortBy] < b[this.sortBy]) return 1;
                                 return 0;
                             }
                         });
-                        return productsArray;
+
+
+                        if (this.searchT == "") {
+                            return productsArray;
+                        } else {
+                            searchText = searchText.trim().toLowerCase();
+                            const searchArray = productsArray.filter((item) => {
+                                if (item.subject.toLowerCase().indexOf(searchText) !== -1) {
+                                    return item;
+                                }
+                            });
+                            return searchArray;
+                        }
                     }
                 },
                 cartItemCount: function () {
